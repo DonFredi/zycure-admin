@@ -1,6 +1,7 @@
 "use client";
 import { Order } from "@/types/order";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   order: Order & {
@@ -11,6 +12,7 @@ interface Props {
 export default function OrderDetailsClient({ order }: Props) {
   const [status, setStatus] = useState<Order["status"]>(order.status);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function updateStatus() {
     setLoading(true);
@@ -21,7 +23,10 @@ export default function OrderDetailsClient({ order }: Props) {
     });
     setLoading(false);
 
-    if (res.ok) alert("Order status updated");
+    if (res.ok) {
+      router.refresh();
+      alert("Order status updated");
+    }
   }
 
   return (
@@ -50,8 +55,8 @@ export default function OrderDetailsClient({ order }: Props) {
 
         <h2 className="font-bold mt-4">Items:</h2>
         <ul className="list-disc ml-4">
-          {order.items?.map((item) => (
-            <li key={item.productId}>
+          {order.items?.map((item, index) => (
+            <li key={`${item.productId}-${index}`}>
               {item.title} – {item.price} x {item.quantity} = {item.price * item.quantity}
             </li>
           )) ?? <li>No items</li>}
@@ -62,23 +67,27 @@ export default function OrderDetailsClient({ order }: Props) {
         </p>
 
         <p className="mt-4">
-          <strong>Status:</strong>
+          <strong>
+            Status:
+            {status}
+          </strong>
         </p>
+        <div className="w-full flex flex-row justify-start gap-2 items-center">
+          <select
+            className="border px-4 py-2 rounded"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as Order["status"])}
+          >
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
 
-        <select
-          className="border p-2 rounded"
-          value={order.status}
-          onChange={(e) => setStatus(e.target.value as Order["status"])}
-        >
-          <option value="pending">Pending</option>
-          <option value="approved">Confirmed</option>
-          <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-
-        <button disabled={loading} onClick={updateStatus} className="bg-blue-600 text-white px-4 py-2 rounded mt-4">
-          {loading ? "Updating..." : "Update Order Status"}
-        </button>
+          <button disabled={loading} onClick={updateStatus} className="bg-blue-600 text-white px-4 py-2 rounded">
+            {loading ? "Updating Order Status..." : "Update Order Status"}
+          </button>
+        </div>
       </div>
     </div>
   );

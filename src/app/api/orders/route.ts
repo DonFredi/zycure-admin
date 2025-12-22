@@ -9,7 +9,11 @@ export async function GET() {
       ...doc.data(),
     }));
 
-    return NextResponse.json(orders);
+    return NextResponse.json(orders, {
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    });
   } catch (err) {
     console.error("Error fetching orders:", err);
     return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });

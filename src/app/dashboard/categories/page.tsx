@@ -1,39 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
-
-interface Category {
-  id: string;
-  name: string;
-  imageUrl: string;
-}
+import { useCategory } from "@/hooks/useCategories";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const { categories, name, setName, setImageFile, handleCategoryAdd, loading } = useCategory();
 
-  useEffect(() => {
-    async function fetchCategories() {
-      setLoading(true);
-      const snapshot = await getDocs(collection(db, "categories"));
-      const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Category[];
-      setCategories(list);
-      setLoading(false);
-    }
-    fetchCategories();
-  }, []);
-
-  const handleAdd = async () => {
-    if (!name || !imageUrl) return alert("Please provide name and image URL");
-    await addDoc(collection(db, "categories"), { name, imageUrl });
-    setCategories([...categories, { id: Date.now().toString(), name, imageUrl }]);
-    setName("");
-    setImageUrl("");
-  };
+  if (loading) return <p>Loading categories...</p>;
+  if (!categories.length) return <p>No categories found.</p>;
 
   if (loading) return <p>Loading categories...</p>;
 
@@ -50,22 +23,22 @@ export default function CategoriesPage() {
           className="border p-2 rounded"
         />
         <input
-          type="text"
           placeholder="Image URL"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
           className="border p-2 rounded"
         />
-        <button onClick={handleAdd} className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+        <button onClick={handleCategoryAdd} className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
           Add Category
         </button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {categories.map((cat) => (
-          <div key={cat.id} className="border p-3 rounded shadow bg-white">
-            <img src={cat.imageUrl} alt={cat.name} className="h-24 w-full object-cover rounded mb-2" />
-            <h2 className="font-bold">{cat.name}</h2>
+        {categories.map((category) => (
+          <div key={category.id} className="border p-3 rounded shadow bg-white">
+            <img src={category.imageSrc} alt={category.name} className="h-24 w-full object-cover rounded mb-2" />
+            <h2>category:{category.name}</h2>
           </div>
         ))}
       </div>

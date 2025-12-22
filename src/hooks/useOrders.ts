@@ -11,7 +11,9 @@ export function useOrders() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const res = await fetch("/api/orders");
+        const res = await fetch("/api/orders", {
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to fetch orders");
 
         const data: Order[] = await res.json();

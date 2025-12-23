@@ -3,7 +3,7 @@ import { adminDb } from "@/lib/firebaseAdmin";
 import { Product } from "@/types/product";
 
 interface PageProps {
-  params: { id: string } | Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProductPage({ params }: PageProps) {

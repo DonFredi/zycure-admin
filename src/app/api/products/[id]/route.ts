@@ -26,10 +26,13 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 }
 
 /* ---------------- PUT ---------------- */
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const body = await req.json();
-  const productId = context.params.id;
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id: productId } = await context.params;
+  if (!productId) {
+    return NextResponse.json({ error: "Missing productId" }, { status: 404 });
+  }
 
+  const body = await req.json();
   const ref = adminDb.collection("products").doc(productId);
   const snap = await ref.get();
 
@@ -44,16 +47,21 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
     await cloudinary.uploader.destroy(existing.imagePublicId);
   }
 
-  await ref.update({
-    ...(body.title && { title: body.title }),
-    ...(body.price !== undefined && { price: body.price }),
-    ...(body.categoryId && { categoryId: body.categoryId }),
-    ...(body.imageSrc && { imageSrc: body.imageSrc }),
-    ...(body.imagePublicId && { imagePublicId: body.imagePublicId }),
-    updatedAt: new Date(),
-  });
+  try {
+    await ref.update({
+      ...(body.title && { title: body.title }),
+      ...(body.price !== undefined && { price: body.price }),
+      ...(body.categoryId && { categoryId: body.categoryId }),
+      ...(body.imageSrc && { imageSrc: body.imageSrc }),
+      ...(body.imagePublicId && { imagePublicId: body.imagePublicId }),
+      updatedAt: new Date(),
+    });
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("Update product failed:", err);
+    return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
+  }
 }
 
 /* ---------------- DELETE ---------------- */

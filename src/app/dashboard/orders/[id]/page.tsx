@@ -3,11 +3,11 @@ import { adminDb } from "@/lib/firebaseAdmin";
 import { Order } from "@/types/order";
 
 interface PageProps {
-  params: { id: string };
+  params: { id: string } | Promise<{ id: string }>;
 }
 
 export default async function OrderPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   const snap = await adminDb.collection("orders").doc(id).get();
 

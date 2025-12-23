@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { uploadProductImage } from "@/lib/uploadProductImage";
+import { useRouter } from "next/navigation";
 
 interface UpdatePayload {
   title?: string;
@@ -15,6 +16,7 @@ interface UpdatePayload {
 
 export function useProductActions(productId: string) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const updateProduct = async (payload: UpdatePayload) => {
     setLoading(true);
@@ -33,6 +35,9 @@ export function useProductActions(productId: string) {
           title: payload.title,
           price: payload.price,
           categoryId: payload.categoryId,
+          benefit: payload.benefit,
+          use: payload.use,
+          desciption: payload.description,
           imageSrc: imageData?.url,
           imagePublicId: imageData?.publicId,
         }),
@@ -59,6 +64,7 @@ export function useProductActions(productId: string) {
     } catch (err) {
       console.error("Delete product failed:", err);
       alert("Failed to delete product");
+      router.refresh();
     } finally {
       setLoading(false);
     }

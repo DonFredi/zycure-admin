@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 export default async function CategoryPage({ params }: PageProps) {
-  const { id } = await params;
+  const { id } = params;
 
   const snap = await adminDb.collection("categories").doc(id).get();
 

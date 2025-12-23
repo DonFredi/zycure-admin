@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -10,8 +10,8 @@ cloudinary.config({
 });
 
 /* ---------------- GET ---------------- */
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const snap = await adminDb.collection("products").doc(params.id).get();
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
+  const snap = await adminDb.collection("products").doc(context.params.id).get();
 
   if (!snap.exists) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -26,9 +26,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 /* ---------------- PUT ---------------- */
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   const body = await req.json();
-  const productId = params.id;
+  const productId = context.params.id;
 
   const ref = adminDb.collection("products").doc(productId);
   const snap = await ref.get();
@@ -57,8 +57,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 /* ---------------- DELETE ---------------- */
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const ref = adminDb.collection("products").doc(params.id);
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+  const ref = adminDb.collection("products").doc(context.params.id);
   const snap = await ref.get();
 
   if (!snap.exists) {

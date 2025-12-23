@@ -3,9 +3,9 @@ import { adminDb } from "@/lib/firebaseAdmin";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } } // NOT Promise<{id: string}>
+  context: { params: { id: string } } // NOT Promise<{id: string}>
 ) {
-  const { id } = params;
+  const { id } = context.params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing order ID" }, { status: 400 });
@@ -26,8 +26,8 @@ export async function GET(
   }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { status } = await req.json();
 
   if (!status) {

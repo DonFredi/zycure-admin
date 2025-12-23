@@ -14,13 +14,14 @@ export function useOrders() {
         const res = await fetch("/api/orders", {
           cache: "no-store",
         });
-        if (!res.ok) throw new Error("Failed to fetch orders");
+        if (!res.ok) throw new Error(`Failed to fetch orders: ${res.statusText}`);
 
         const data: Order[] = await res.json();
         setOrders(data);
       } catch (err) {
         console.error(err);
         setError("Failed to load orders");
+        return [];
       } finally {
         setLoading(false);
       }

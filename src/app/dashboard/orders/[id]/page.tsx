@@ -7,7 +7,7 @@ interface PageProps {
 }
 
 export default async function OrderPage({ params }: PageProps) {
-  const { id } = await params;
+  const { id } = params;
 
   const snap = await adminDb.collection("orders").doc(id).get();
 

@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } } // NOT Promise<{id: string}>
+) {
   const { id } = params;
 
   if (!id) {

@@ -1,8 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 import ProductDetailsClient from "./ProductDetailsClient";
-import { adminDb } from "@/lib/firebaseAdmin";
-import { serializeTimestamp } from "@/lib/serializeTimetamps";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { Product } from "@/types/product";
 
 interface PageProps {
@@ -11,7 +10,8 @@ interface PageProps {
 
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
-  const snap = await adminDb.collection("products").doc(id).get();
+  const db = getAdminDb();
+  const snap = await db.collection("products").doc(id).get();
 
   if (!snap.exists) {
     return <div>Product not found</div>;

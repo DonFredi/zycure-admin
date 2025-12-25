@@ -1,8 +1,8 @@
 import admin from "firebase-admin";
 
-let app: admin.app.App;
+let app: admin.app.App | undefined;
 
-export function getAdminApp() {
+export function getAdminApp(): admin.app.App {
   if (app) return app;
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
@@ -13,16 +13,18 @@ export function getAdminApp() {
     throw new Error("Missing Firebase Admin environment variables");
   }
 
-  app =
-    admin.apps.length > 0
-      ? admin.apps[0]
-      : admin.initializeApp({
-          credential: admin.credential.cert({
-            projectId,
-            clientEmail,
-            privateKey,
-          }),
-        });
+  if (admin.apps.length > 0) {
+    app = admin.app(); // ✅ ALWAYS returns App
+    return app;
+  }
+
+  app = admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId,
+      clientEmail,
+      privateKey,
+    }),
+  });
 
   return app;
 }

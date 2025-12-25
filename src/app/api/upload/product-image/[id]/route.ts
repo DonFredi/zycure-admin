@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { v2 as cloudinary } from "cloudinary";
 
 // 🔐 SERVER ONLY
@@ -23,7 +23,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
 
-    const ref = adminDb.collection("products").doc(productId);
+    const db = getAdminDb();
+    const ref = db.collection("products").doc(productId);
     const snap = await ref.get();
 
     if (!snap.exists) {

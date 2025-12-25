@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 
 export async function GET() {
   try {
-    const snapshot = await adminDb.collection("products").get();
+    const db = getAdminDb();
+    const snapshot = await db.collection("products").get();
     const products = snapshot.docs.map((doc) => {
       const data = doc.data();
 
@@ -25,8 +26,8 @@ export async function POST(req: Request) {
   if (!body.title || !body.price || !body.categoryId) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
-
-  const ref = await adminDb.collection("products").add({
+  const db = getAdminDb();
+  const ref = await db.collection("products").add({
     title: body.title,
     price: body.price,
     categoryId: body.categoryId,

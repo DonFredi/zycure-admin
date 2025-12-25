@@ -1,5 +1,5 @@
 import CategoryDetailsClient from "./CategoryDetailsClient";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { Category } from "@/types/category";
 
 interface PageProps {
@@ -8,8 +8,8 @@ interface PageProps {
 
 export default async function CategoryPage({ params }: PageProps) {
   const { id } = params;
-
-  const snap = await adminDb.collection("categories").doc(id).get();
+  const db = getAdminDb();
+  const snap = await db.collection("categories").doc(id).get();
 
   if (!snap.exists) {
     return <div> Category not found</div>;

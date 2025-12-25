@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 
 export async function GET(
   req: NextRequest,
@@ -12,7 +12,8 @@ export async function GET(
   }
 
   try {
-    const docSnap = adminDb.collection("orders").doc(id);
+    const db = getAdminDb();
+    const docSnap = db.collection("orders").doc(id);
     const snap = await docSnap.get();
 
     if (!snap.exists) {
@@ -35,7 +36,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
   }
 
   try {
-    await adminDb.collection("orders").doc(id).update({ status });
+    const db = getAdminDb();
+    await db.collection("orders").doc(id).update({ status });
     return NextResponse.json({ message: "Order updated" });
   } catch (err) {
     console.error("Error updating order:", err);

@@ -23,13 +23,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
     setLoading(true);
 
     try {
-      // 1️⃣ Upload image first
-      let imageData = null;
-      if (imageFile) {
-        imageData = await uploadProductImage(imageFile, title);
-      }
-
-      // 2️⃣ Create product
+      // 1️⃣ Create product first
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,15 +33,30 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
           categoryId,
           benefit,
           use,
-          imageSrc: imageData?.url ?? null,
-          imagePublicId: imageData?.publicId ?? null,
         }),
       });
 
       if (!res.ok) throw new Error("Failed to create product");
 
+      const { productId } = await res.json();
+
+      // 2️⃣ Upload image
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        formData.append("title", title);
+
+        const uploadRes = await fetch(`/api/upload/product-image/${productId}`, {
+          method: "PUT",
+          body: formData,
+        });
+
+        const uploadData = await uploadRes.json();
+        if (!uploadData.success) throw new Error("Image upload failed");
+      }
+
       onSuccess();
-      router.refresh(); // refresh products list
+      router.refresh();
     } catch (err) {
       console.error(err);
       alert("Failed to add product");

@@ -1,12 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import Link from "next/link";
 
-
 export default function ProductsPage() {
   const { products, loading } = useProducts();
-  
 
   if (loading) return <p>Loading products...</p>;
   if (!products.length) return <p>No products found.</p>;
@@ -39,7 +38,7 @@ export default function ProductsPage() {
           href="/dashboard/products/new-product"
           className=" border p-3 rounded shadow bg-white flex items-center justify-center text-4xl cursor-pointer hover:bg-gray-100"
         >
-          <button className="bg-blue-600 p-2 flex items-center">+</button>
+          <Button className="flex items-center">+</Button>
         </Link>
       </div>
     </div>

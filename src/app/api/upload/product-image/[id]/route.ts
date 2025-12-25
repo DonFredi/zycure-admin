@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -11,9 +12,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   try {
-    const { id: productId } = await context.params; // ✅ extract id
+    const { id: productId } = context.params;
     const formData = await req.formData();
 
     const file = formData.get("file") as File | null;
@@ -35,19 +36,41 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 
     // 🧹 Delete old image
     if (existing?.imageSrc?.publicId) {
-      await cloudinary.uploader.destroy(existing.imageSrc.publicId);
+      await cloudinary.uploader.destroy(existing.imageSrc.publicId, {
+        invalidate: true,
+      });
     }
 
     // Convert file → buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
     // Upload to Cloudinary
-    const uploadResult = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+    const uploadResult = await new Promise<{
+      secure_url: string;
+      public_id: string;
+    }>((resolve, reject) => {
       cloudinary.uploader
-        .upload_stream({ folder: "products" }, (error, result) => {
-          if (error || !result) reject(error);
-          else resolve(result as any);
-        })
+        .upload_stream(
+          {
+            folder: "products",
+            public_id: `${title}-${Date.now()}`,
+          },
+          (error, result) => {
+            if (error) {
+              console.error("Cloudinary upload error:", error);
+              return reject(error);
+            }
+
+            if (!result) {
+              return reject(new Error("Cloudinary returned no result"));
+            }
+
+            resolve({
+              secure_url: result.secure_url,
+              public_id: result.public_id,
+            });
+          }
+        )
         .end(buffer);
     });
 

@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadProductImage } from "@/lib/uploadProductImage";
+import { useCategory } from "@/hooks/useCategories";
 
 export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void; onSuccess: () => void }) {
+  const { categories } = useCategory();
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [categoryId, setCategoryId] = useState("");
   const [benefit, setBenefit] = useState("");
+  const [description, setDescription] = useState("");
   const [use, setUse] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -80,8 +83,22 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         Category:{" "}
         <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="border p-2 mb-2 w-full">
           <option value="">Select Category</option>
-          {/* Map categories */}
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
         </select>
+      </div>
+      <div>
+        Description:
+        <input
+          type="text"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="border p-2 mb-2 w-full"
+        />
       </div>
       <div>
         Benefits:{" "}

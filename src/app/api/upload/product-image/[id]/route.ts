@@ -1,29 +1,73 @@
-import { NextRequest } from "next/server";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import cloudinary from "@/lib/cloudinary";
+export const dynamic = "force-dynamic";
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const body = await req.json();
-  const ref = doc(db, "products", context.params.id);
+import { NextRequest, NextResponse } from "next/server";
+import { adminDb } from "@/lib/firebaseAdmin";
+import { v2 as cloudinary } from "cloudinary";
 
-  // Cleanup old images if replacing
-  if (body.oldPublicIds?.length) {
-    await Promise.all(body.oldPublicIds.map((id: string) => cloudinary.uploader.destroy(id)));
+// 🔐 SERVER ONLY
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const productId = params.id;
+    const formData = await req.formData();
+
+    const file = formData.get("file") as File | null;
+    const title = (formData.get("title") as string) ?? "product";
+
+    if (!file) {
+      return NextResponse.json({ error: "No image provided" }, { status: 400 });
+    }
+
+    const ref = adminDb.collection("products").doc(productId);
+    const snap = await ref.get();
+
+    if (!snap.exists) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    const existing = snap.data();
+
+    // 🧹 Delete old image
+    if (existing?.imageSrc?.publicId) {
+      await cloudinary.uploader.destroy(existing.imageSrc.publicId);
+    }
+
+    // Convert file → buffer
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    // Upload to Cloudinary
+    const uploadResult = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "products" }, (error, result) => {
+          if (error || !result) reject(error);
+          else resolve(result as any);
+        })
+        .end(buffer);
+    });
+
+    // Update Firestore
+    await ref.update({
+      imageSrc: {
+        url: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+      },
+      updatedAt: new Date(),
+    });
+
+    return NextResponse.json({
+      success: true,
+      imageSrc: {
+        url: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+      },
+    });
+  } catch (err) {
+    console.error("Product image upload failed:", err);
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
-
-  await updateDoc(ref, body.updateData);
-  return new Response(null, { status: 204 });
-}
-
-export async function DELETE(req: NextRequest) {
-  const { productId, publicIds } = await req.json();
-
-  // 1️⃣ Delete Cloudinary images
-  await Promise.all(publicIds.map((id: string) => cloudinary.uploader.destroy(id)));
-
-  // 2️⃣ Delete Firestore doc
-  await deleteDoc(doc(db, "products", productId));
-
-  return new Response(null, { status: 204 });
 }

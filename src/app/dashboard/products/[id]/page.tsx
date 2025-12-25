@@ -31,10 +31,8 @@ export default async function ProductPage({ params }: PageProps) {
     description: data.description,
     benefit: data.benefit,
     use: data.use,
-
-    // ✅ SERIALIZED
-    createdAt: data.createdAt?.toDate?.().toISOString() ?? null,
-    updatedAt: data.updatedAt?.toDate?.().toISOString() ?? null,
+    createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : null,
+    updatedAt: data.updatedAt ? new Date(data.updatedAt.seconds * 1000).toISOString() : null,
   };
   return <ProductDetailsClient product={product} />;
 }

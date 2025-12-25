@@ -1,5 +1,5 @@
 import OrderDetailsClient from "./OrderDetailsClient";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { Order } from "@/types/order";
 
 interface PageProps {
@@ -8,8 +8,9 @@ interface PageProps {
 
 export default async function OrderPage({ params }: PageProps) {
   const { id } = await params;
+  const db = getAdminDb();
 
-  const snap = await adminDb.collection("orders").doc(id).get();
+  const snap = await db.collection("orders").doc(id).get();
 
   if (!snap.exists) {
     return <div>Order not found</div>;

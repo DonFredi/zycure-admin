@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 
 export async function GET() {
   try {
-    const snapshot = await adminDb.collection("categories").get();
+    const db = getAdminDb();
+    const snapshot = await db.collection("categories").get();
     const categories = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -18,8 +19,8 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
-    const docRef = await adminDb.collection("categories").add({
+    const db = getAdminDb();
+    const docRef = await db.collection("categories").add({
       ...body,
       createdAt: new Date(),
     });

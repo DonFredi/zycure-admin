@@ -5,7 +5,7 @@ export async function GET(
   req: NextRequest,
   context: { params: { id: string } } // NOT Promise<{id: string}>
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing order ID" }, { status: 400 });

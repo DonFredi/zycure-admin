@@ -3,7 +3,7 @@ import { adminDb } from "@/lib/firebaseAdmin";
 
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } } // NOT Promise<{id: string}>
+  context: { params: Promise<{ id: string }> } // NOT Promise<{id: string}>
 ) {
   const { id } = await context.params;
 

@@ -1,7 +1,6 @@
 import CategoryDetailsClient from "./CategoryDetailsClient";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { Category } from "@/types/category";
-import { Order } from "@/types/order";
 
 interface PageProps {
   params: { id: string };

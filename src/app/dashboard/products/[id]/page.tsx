@@ -1,5 +1,8 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import ProductDetailsClient from "./ProductDetailsClient";
 import { adminDb } from "@/lib/firebaseAdmin";
+import { serializeTimestamp } from "@/lib/serializeTimetamps";
 import { Product } from "@/types/product";
 
 interface PageProps {
@@ -14,14 +17,24 @@ export default async function ProductPage({ params }: PageProps) {
     return <div>Product not found</div>;
   }
 
-  const data = snap.data() as Omit<Product, "id" | "createdAt"> & {
+  const data = snap.data() as Omit<Product, "id" | "createdAt" | "updatedAt"> & {
     createdAt?: { seconds: number };
+    updatedAt?: { seconds: number };
   };
 
   const product = {
     id: snap.id,
-    ...data,
-    createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : null,
+    title: data.title,
+    price: data.price,
+    categoryId: data.categoryId,
+    imageSrc: data.imageSrc,
+    description: data.description,
+    benefit: data.benefit,
+    use: data.use,
+
+    // ✅ SERIALIZED
+    createdAt: data.createdAt?.toDate?.().toISOString() ?? null,
+    updatedAt: data.updatedAt?.toDate?.().toISOString() ?? null,
   };
   return <ProductDetailsClient product={product} />;
 }

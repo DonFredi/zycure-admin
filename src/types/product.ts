@@ -7,4 +7,6 @@ export interface Product {
   description?: string;
   benefit?: string;
   use?: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 }

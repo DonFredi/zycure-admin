@@ -3,12 +3,14 @@ import { Product } from "@/types/product";
 import { useProductActions } from "@/hooks/useProductActions";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useCategory } from "@/hooks/useCategories";
 
 interface Props {
   product: Product;
 }
 export default function ProductDetailsClient({ product }: Props) {
   const { updateProduct, deleteProduct, loading } = useProductActions(product.id);
+  const { categories } = useCategory();
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(product.title);
   const [price, setPrice] = useState(product.price);
@@ -37,6 +39,7 @@ export default function ProductDetailsClient({ product }: Props) {
     setImageFile(null);
     setEditing(false);
   };
+  const categoryName = categories.find((c) => c.id === product.categoryId)?.name ?? "Unknown";
 
   return (
     <div>
@@ -63,9 +66,16 @@ export default function ProductDetailsClient({ product }: Props) {
         <p>Title:{product.price}</p>
       )}
       {editing ? (
-        <input className="border p-2 w-full mb-2" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} />
+        <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="border p-2 rounded">
+          <option value="">Select category</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
       ) : (
-        <p>Category:{product.categoryId}</p>
+        <p>Category:{categoryName}</p>
       )}
       {editing ? (
         <input className="border p-2 w-full mb-2" value={benefit} onChange={(e) => setBenefit(e.target.value)} />
@@ -77,6 +87,8 @@ export default function ProductDetailsClient({ product }: Props) {
       ) : (
         <p>How to use :{product.use}</p>
       )}
+      <p>Updated At: {product.updatedAt && new Date(product.updatedAt).toLocaleString()}</p>
+
       <div className="flex gap-2 mt-2">
         {editing ? (
           <>
@@ -96,7 +108,7 @@ export default function ProductDetailsClient({ product }: Props) {
             >
               Edit
             </Button>
-            <Button onClick={() => deleteProduct} className="bg-red-600 text-white p-1 rounded hover:bg-red-700">
+            <Button onClick={deleteProduct} className="bg-red-600 text-white p-1 rounded hover:bg-red-700">
               Delete
             </Button>
           </>

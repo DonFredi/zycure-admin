@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse, NextRequest } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { v2 as cloudinary } from "cloudinary";
@@ -10,17 +12,22 @@ cloudinary.config({
 });
 
 /* ---------------- GET ---------------- */
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
-  const snap = await adminDb.collection("products").doc(context.params.id).get();
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const snap = await adminDb.collection("products").doc(id).get();
 
   if (!snap.exists) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+
   const data = snap.data();
 
   return NextResponse.json({
     id: snap.id,
     ...data,
+    createdAt: data?.createdAt?.toDate?.().toISOString() ?? null,
+    updatedAt: data?.updatedAt?.toDate?.().toISOString() ?? null,
     imageSrc: typeof data?.imageSrc === "string" ? { url: data.imageSrc, publicId: null } : data?.imageSrc ?? null,
   });
 }
@@ -52,6 +59,9 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       ...(body.title && { title: body.title }),
       ...(body.price !== undefined && { price: body.price }),
       ...(body.categoryId && { categoryId: body.categoryId }),
+      ...(body.description && { description: body.description }),
+      ...(body.benefit && { benefit: body.benefit }),
+      ...(body.use && { use: body.use }),
       ...(body.imageSrc && { imageSrc: body.imageSrc }),
       ...(body.imagePublicId && { imagePublicId: body.imagePublicId }),
       updatedAt: new Date(),
@@ -65,8 +75,10 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 }
 
 /* ---------------- DELETE ---------------- */
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
-  const ref = adminDb.collection("products").doc(context.params.id);
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const ref = adminDb.collection("products").doc(id);
   const snap = await ref.get();
 
   if (!snap.exists) {

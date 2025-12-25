@@ -1,14 +1,13 @@
 "use client";
 
 import { useCategory } from "@/hooks/useCategories";
+import Image from "next/image";
 
 export default function CategoriesPage() {
   const { categories, name, setName, setImageFile, handleCategoryAdd, loading } = useCategory();
 
   if (loading) return <p>Loading categories...</p>;
   if (!categories.length) return <p>No categories found.</p>;
-
-  if (loading) return <p>Loading categories...</p>;
 
   return (
     <>
@@ -37,7 +36,12 @@ export default function CategoriesPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {categories.map((category) => (
           <div key={category.id} className="border p-3 rounded shadow bg-white">
-            <img src={category.imageSrc} alt={category.name} className="h-24 w-full object-cover rounded mb-2" />
+            <Image
+              src={typeof category.imageSrc === "string" ? category.imageSrc : category.imageSrc?.url}
+              alt={category.name}
+              height={96}
+              className="h-24 w-full object-cover rounded mb-2"
+            />
             <h2>category:{category.name}</h2>
           </div>
         ))}

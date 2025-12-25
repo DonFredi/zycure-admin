@@ -3,7 +3,7 @@ import { adminDb } from "@/lib/firebaseAdmin";
 import { Order } from "@/types/order";
 
 interface PageProps {
-  params: { id: string } | Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function OrderPage({ params }: PageProps) {
@@ -20,7 +20,7 @@ export default async function OrderPage({ params }: PageProps) {
   const order = {
     id: snap.id,
     ...data,
-    createdAt: data?.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : null,
+    createdAt: data?.createdAt?.toDate?.().toISOString() ?? null,
   };
   return <OrderDetailsClient order={order} />;
 }

@@ -22,7 +22,7 @@ export function useProductActions(productId: string) {
     setLoading(true);
 
     try {
-      let imageData;
+      let imageData: { url: string; publicId: string } | null = null;
 
       if (payload.imageFile) {
         imageData = await uploadProductImage(payload.imageFile, payload.title ?? "product");
@@ -37,12 +37,12 @@ export function useProductActions(productId: string) {
           categoryId: payload.categoryId,
           benefit: payload.benefit,
           use: payload.use,
-          desciption: payload.description,
-          imageSrc: imageData?.url,
-          imagePublicId: imageData?.publicId,
+          description: payload.description,
+          imageSrc: imageData ? { url: imageData.url, publicId: imageData.publicId } : undefined,
         }),
       });
       if (!res.ok) throw new Error("Failed to update product");
+      router.refresh();
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,6 @@ export function useProductActions(productId: string) {
     } catch (err) {
       console.error("Delete product failed:", err);
       alert("Failed to delete product");
-      router.refresh();
     } finally {
       setLoading(false);
     }

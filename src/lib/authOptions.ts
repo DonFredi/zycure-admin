@@ -1,6 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { auth } from "./firebase"; // client SDK
-import { adminAuth } from "./firebaseAdmin"; // admin SDK
+import { getAdminAuth } from "./firebaseAdmin"; // admin SDK
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { NextAuthOptions } from "next-auth";
 
@@ -17,6 +17,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
+          const adminAuth = getAdminAuth();
           const userCred = await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
 
           const adminUser = await adminAuth.getUser(userCred.user.uid);

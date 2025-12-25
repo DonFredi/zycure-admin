@@ -11,9 +11,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const productId = params.id;
+    const { id: productId } = await context.params; // ✅ extract id
     const formData = await req.formData();
 
     const file = formData.get("file") as File | null;

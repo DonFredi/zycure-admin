@@ -53,9 +53,12 @@ export function useProducts() {
 
       // 1️⃣ Upload image to Cloudinary
       const uploaded = await uploadProductImage(imageFile, title);
-      // Assume uploaded is { url: string; publicId: string }
+      // uploaded = { url: string; publicId: string }
 
       // 2️⃣ Save product to Firestore
+      const createdAt = new Date().toISOString();
+      const updatedAt = createdAt;
+
       const docRef = await addDoc(collection(db, "products"), {
         title,
         price,
@@ -63,8 +66,9 @@ export function useProducts() {
         description,
         benefit,
         use,
-        imageSrc: uploaded, // matches Product type
-        createdAt: new Date(),
+        imageSrc: uploaded,
+        createdAt,
+        updatedAt,
       });
 
       // 3️⃣ Optimistic UI update
@@ -79,6 +83,8 @@ export function useProducts() {
           benefit,
           use,
           imageSrc: uploaded,
+          createdAt,
+          updatedAt,
         },
       ]);
 

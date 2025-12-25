@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse, NextRequest } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { v2 as cloudinary } from "cloudinary";
 
 // 🔐 Cloudinary config (SERVER ONLY)
@@ -14,8 +14,8 @@ cloudinary.config({
 /* ---------------- GET ---------------- */
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
-  const snap = await adminDb.collection("products").doc(id).get();
+  const db = getAdminDb();
+  const snap = await db.collection("products").doc(id).get();
 
   if (!snap.exists) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -40,7 +40,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
   }
 
   const body = await req.json();
-  const ref = adminDb.collection("products").doc(productId);
+  const db = getAdminDb();
+  const ref = db.collection("products").doc(productId);
   const snap = await ref.get();
 
   if (!snap.exists) {
@@ -78,7 +79,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  const ref = adminDb.collection("products").doc(id);
+  const db = getAdminDb();
+  const ref = db.collection("products").doc(id);
   const snap = await ref.get();
 
   if (!snap.exists) {

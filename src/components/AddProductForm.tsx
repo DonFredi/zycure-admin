@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadProductImage } from "@/lib/uploadProductImage";
 import { useCategory } from "@/hooks/useCategories";
+import { Input } from "./ui/input";
 
 export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void; onSuccess: () => void }) {
   const { categories } = useCategory();
@@ -69,7 +70,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
     <div className="border p-4 rounded bg-white mt-4">
       <div>
         Product Name:
-        <input
+        <Input
           type="text"
           placeholder="Title"
           value={title}
@@ -79,7 +80,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
       </div>
       <div>
         Price:
-        <input
+        <Input
           type="number"
           min="0"
           placeholder="Price"
@@ -101,7 +102,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
       </div>
       <div>
         Description:
-        <input
+        <Input
           type="text"
           placeholder="Description"
           value={description}
@@ -111,7 +112,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
       </div>
       <div>
         Benefits:{" "}
-        <input
+        <Input
           type="text"
           placeholder="Benefit"
           value={benefit}
@@ -121,7 +122,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
       </div>
       <div>
         How to use:
-        <input
+        <Input
           type="text"
           placeholder="Use"
           value={use}
@@ -131,7 +132,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
       </div>
       <div>
         Product image:
-        <input type="file" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} className="mb-2" />
+        <Input type="file" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} className="mb-2" />
       </div>
 
       <div className="flex gap-2">

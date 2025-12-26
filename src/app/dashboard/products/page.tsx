@@ -1,5 +1,6 @@
 "use client";
 
+import Plus from "@/components/icons/Plus";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import Link from "next/link";
@@ -38,7 +39,9 @@ export default function ProductsPage() {
           href="/dashboard/products/new-product"
           className=" border p-3 rounded shadow bg-white flex items-center justify-center text-4xl cursor-pointer hover:bg-gray-100"
         >
-          <Button className="flex items-center">+</Button>
+          <Button className="flex items-center text-lg">
+            <Plus className="text-white" />
+          </Button>
         </Link>
       </div>
     </div>

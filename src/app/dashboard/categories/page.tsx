@@ -36,13 +36,19 @@ export default function CategoriesPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {categories.map((category) => (
           <div key={category.id} className="border p-3 rounded shadow bg-white">
-            <Image
-              src={typeof category.imageSrc === "string" ? category.imageSrc : category.imageSrc?.url}
-              alt={category.name}
-              height={96}
-              className="h-24 w-full object-cover rounded mb-2"
-            />
-            <h2>category:{category.name}</h2>
+            <div className="relative w-full aspect-4/3 mb-2">
+              <Image
+                src={
+                  typeof category.imageSrc === "string"
+                    ? category.imageSrc
+                    : category.imageSrc?.url || "/images/placeholder.png"
+                }
+                alt={category.name}
+                fill
+                className="object-cover rounded"
+              />
+            </div>
+            <h2>Category: {category.name}</h2>
           </div>
         ))}
       </div>

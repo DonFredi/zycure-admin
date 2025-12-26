@@ -4,21 +4,22 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req: any) {
   const { pathname } = req.nextUrl;
 
-  // Allow login page & NextAuth routes & Next.js internals
-  if (pathname.startsWith("/login") || pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico")) {
+  // ✅ Allow public & NextAuth routes
+  if (
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/api/auth") || // 🔥 THIS LINE FIXES IT
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon.ico")
+  ) {
     return NextResponse.next();
   }
 
-  // Get NEXTAUTH token
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-  // If no token → redirect to login
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  // If token exists but admin = false
-  if (!token.admin) {
+  if (!token || token.admin !== true) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -26,5 +27,5 @@ export async function middleware(req: any) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"], // protect ONLY dashboard pages
+  matcher: ["/dashboard/:path*"],
 };

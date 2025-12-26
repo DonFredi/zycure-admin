@@ -1,5 +1,6 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
 import { useCategory } from "@/hooks/useCategories";
 import Image from "next/image";
 
@@ -14,19 +15,19 @@ export default function CategoriesPage() {
       <h1 className="text-2xl font-bold mb-4">Categories</h1>
 
       <div className="mb-4 flex gap-2">
-        <input
+        <Input
           type="text"
           placeholder="Category Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border p-2 rounded"
+          className="border p-2 rounded w-fit"
         />
-        <input
+        <Input
           placeholder="Image URL"
           type="file"
           accept="image/*"
           onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-          className="border p-2 rounded"
+          className="border p-2 rounded w-fit"
         />
         <button onClick={handleCategoryAdd} className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
           Add Category

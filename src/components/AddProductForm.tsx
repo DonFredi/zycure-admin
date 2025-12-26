@@ -124,7 +124,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         How to use:
         <Input
           type="text"
-          placeholder="Use"
+          placeholder="How to use"
           value={use}
           onChange={(e) => setUse(e.target.value)}
           className="border p-2 mb-2 w-full"

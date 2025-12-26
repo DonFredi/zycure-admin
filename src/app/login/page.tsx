@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -33,38 +34,36 @@ export default function LoginPage() {
     }
   };
 
-  const handleLogout = async () => {
-    await signOut({
-      redirect: true,
-      callbackUrl: "/login",
-    });
-  };
-
   return (
-    <div className="flex flex-col gap-3 p-4 w-[300px] mx-auto mt-20">
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="p-2 border rounded"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="p-2 border rounded"
-      />
-      <button onClick={handleLogin} className="bg-blue-500 text-white p-2 rounded">
-        Login
-      </button>
-      <p className="mt-2 text-center">
-        Already signed in?{" "}
-        <button onClick={handleLogout} className="text-blue-600 underline">
-          Log out
+    <div className="flex flex-col gap-2 items-center justify-center">
+      <h2 className="font-bold mt-4 text-2xl">Log in to ZyCure Admin App</h2>
+
+      <div className="flex flex-col gap-3 p-4 w-75 mx-auto mt-20">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="p-2 border rounded"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="p-2 border rounded"
+        />
+        <button onClick={handleLogin} className="bg-blue-500 text-white p-2 rounded">
+          Login
         </button>
-      </p>
+
+        <p>
+          Forgot password?{" "}
+          <Link href="/components/AdminChangePassword" className="">
+            Reset password
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

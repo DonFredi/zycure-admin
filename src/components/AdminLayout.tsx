@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Logo from "./icons/Logo";
+import AdminLogoutButton from "./AdminLogoutButton";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -19,6 +20,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <Link href="/dashboard/orders" className="hover:underline">
           View Orders
         </Link>
+        <AdminLogoutButton />
       </aside>
       <main className="flex-1 p-6 bg-gray-100">{children}</main>
     </div>

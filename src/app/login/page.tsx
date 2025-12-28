@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [resetting, setResetting] = useState(false); // loading state
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -31,6 +34,20 @@ export default function LoginPage() {
       router.push("/dashboard"); // manually redirect
     } else {
       alert("Invalid credentials or not admin");
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!email) return console.error("Enter your email first");
+
+    try {
+      setResetting(true);
+      await sendPasswordResetEmail(auth, email);
+      console.log("Password reset email sent");
+    } catch (err: any) {
+      console.error(err.message || "Failed to send reset email");
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -59,9 +76,13 @@ export default function LoginPage() {
 
         <p>
           Forgot password?{" "}
-          <Link href="/components/AdminChangePassword" className="">
-            Reset password
-          </Link>
+          <Button
+            className="underline hover:no-underline text-blue-600"
+            onClick={handleResetPassword}
+            disabled={resetting}
+          >
+            {resetting ? "Sending..." : "Reset Password"}
+          </Button>
         </p>
       </div>
     </div>

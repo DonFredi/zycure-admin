@@ -61,7 +61,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
-      <h2 className="font-bold mt-4 text-2xl">Log in to ZyCure Admin App</h2>
+      <h2 className="font-bold mt-4 text-2xl">Log in</h2>
 
       <div className="flex flex-col gap-3 p-4 w-75 mx-auto mt-20">
         <input
@@ -84,11 +84,7 @@ export default function LoginPage() {
 
         <p>
           Forgot password?{" "}
-          <Button
-            className="underline hover:no-underline text-blue-600"
-            onClick={handleResetPassword}
-            disabled={resetting}
-          >
+          <Button onClick={handleResetPassword} disabled={resetting}>
             {resetting ? "Sending..." : "Reset Password"}
           </Button>
         </p>

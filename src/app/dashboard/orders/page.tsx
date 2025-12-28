@@ -28,7 +28,7 @@ export default function OrdersPage() {
                 </li>
               ))}
             </ul>
-            <p className="text-blue-400 hover:underline">View Details</p>
+            <p className="text-blue-400 hover:underline w-fit">View Details</p>
           </Link>
         ))}
       </div>

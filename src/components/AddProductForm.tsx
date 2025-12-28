@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { uploadProductImage } from "@/lib/uploadProductImage";
 import { useCategory } from "@/hooks/useCategories";
 import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void; onSuccess: () => void }) {
   const { categories } = useCategory();
@@ -40,6 +41,9 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
       if (!res.ok) throw new Error("Failed to create product");
 
       const { productId } = await res.json();
+      if (!productId) {
+        throw new Error("Missing product ID");
+      }
 
       // 2️⃣ Upload image
       if (imageFile) {
@@ -48,12 +52,12 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         formData.append("title", title);
 
         const uploadRes = await fetch(`/api/upload/product-image/${productId}`, {
-          method: "PUT",
+          method: "POST",
           body: formData,
         });
 
         const uploadData = await uploadRes.json();
-        if (!uploadData.success) throw new Error("Image upload failed");
+        if (!uploadRes.ok || !uploadData.success) throw new Error(uploadData.error);
       }
 
       onSuccess();
@@ -69,7 +73,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
   return (
     <div className="border p-4 rounded bg-white mt-4">
       <div>
-        Product Name:
+        <Label htmlFor="name">Name:</Label>
         <Input
           type="text"
           placeholder="Title"
@@ -79,7 +83,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         />
       </div>
       <div>
-        Price:
+        <Label htmlFor="price">Price:</Label>
         <Input
           type="number"
           min="0"
@@ -90,7 +94,8 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         />
       </div>
       <div>
-        Category:{" "}
+        <Label htmlFor="category">Category:</Label>
+
         <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="border p-2 mb-2 w-full">
           <option value="">Select Category</option>
           {categories.map((cat) => (
@@ -101,7 +106,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         </select>
       </div>
       <div>
-        Description:
+        <Label htmlFor="description">Description:</Label>
         <Input
           type="text"
           placeholder="Description"
@@ -111,7 +116,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         />
       </div>
       <div>
-        Benefits:{" "}
+        <Label htmlFor="benefit">Benefit:</Label>
         <Input
           type="text"
           placeholder="Benefit"
@@ -121,7 +126,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         />
       </div>
       <div>
-        How to use:
+        <Label htmlFor="use">How to use:</Label>
         <Input
           type="text"
           placeholder="How to use"
@@ -131,7 +136,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         />
       </div>
       <div>
-        Product image:
+        <Label htmlFor="image">Image:</Label>
         <Input type="file" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} className="mb-2" />
       </div>
 

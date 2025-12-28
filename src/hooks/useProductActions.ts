@@ -25,7 +25,7 @@ export function useProductActions(productId: string) {
       let imageData: { url: string; publicId: string } | null = null;
 
       if (payload.imageFile) {
-        imageData = await uploadProductImage(payload.imageFile, payload.title ?? "product");
+        imageData = await uploadProductImage(productId, payload.imageFile, payload.title ?? "product");
       }
 
       const res = await fetch(`/api/products/${productId}`, {

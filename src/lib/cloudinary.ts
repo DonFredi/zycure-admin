@@ -6,6 +6,11 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY!,
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
+console.log("Cloudinary runtime check:", {
+  cloud: process.env.CLOUDINARY_CLOUD_NAME,
+  keyLoaded: !!process.env.CLOUDINARY_API_KEY,
+  secretLoaded: !!process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function deleteFromCloudinary(publicId?: string | null) {
   if (!publicId) return;

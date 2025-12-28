@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useCategory } from "@/hooks/useCategories";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 interface Props {
   product: Product;
@@ -16,6 +18,7 @@ export default function ProductDetailsClient({ product }: Props) {
   const [title, setTitle] = useState(product.title);
   const [price, setPrice] = useState(product.price);
   const [categoryId, setCategoryId] = useState(product.categoryId);
+  const [description, setDescription] = useState(product.description);
   const [benefit, setBenefit] = useState(product.benefit);
   const [use, setUse] = useState(product.use);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -27,6 +30,7 @@ export default function ProductDetailsClient({ product }: Props) {
       categoryId,
       imageFile,
       benefit,
+      description,
       use,
     });
     setEditing(false);
@@ -37,6 +41,7 @@ export default function ProductDetailsClient({ product }: Props) {
     setPrice(product.price);
     setCategoryId(product.categoryId);
     setBenefit(product.benefit);
+    setDescription(product.description);
     setImageFile(null);
     setEditing(false);
   };
@@ -44,51 +49,95 @@ export default function ProductDetailsClient({ product }: Props) {
 
   return (
     <div>
-      {editing && (
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-          className="mt-2"
-        />
-      )}
       {editing ? (
-        <Input className="border p-2 w-full mb-2" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <>
+          <Label htmlFor="file">Image:</Label>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+            className="mt-2"
+          />
+        </>
       ) : (
-        <h2>Title:{product.title}</h2>
+        <div className="mb-4">
+          <Label>Image:</Label>
+
+          <div className="relative w-40 h-40 mt-2 border rounded overflow-hidden">
+            <Image
+              src={product.imageSrc?.url || "/images/placeholder.png"}
+              alt={product.title}
+              fill
+              className="object-cover"
+              sizes="160px"
+            />
+          </div>
+        </div>
       )}
       {editing ? (
-        <Input
-          className="border p-2 w-full mb-2"
-          value={price}
-          onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : 0)}
-        />
+        <>
+          <Label htmlFor="name">Name:</Label>
+          <Input className="border p-2 w-full mb-2" value={title} onChange={(e) => setTitle(e.target.value)} />
+        </>
       ) : (
-        <p>Title:{product.price}</p>
+        <h2>Name:{product.title}</h2>
       )}
       {editing ? (
-        <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="border p-2 rounded">
-          <option value="">Select category</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+        <>
+          <Label htmlFor="price">Price:</Label>
+          <Input
+            className="border p-2 w-full mb-2"
+            value={price}
+            onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : 0)}
+          />
+        </>
+      ) : (
+        <p>Price:{product.price}</p>
+      )}
+      {editing ? (
+        <>
+          <Label htmlFor="category">Category:</Label>
+          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="border p-2 rounded">
+            <option value="">Select category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </>
       ) : (
         <p>Category:{categoryName}</p>
       )}
       {editing ? (
-        <Input className="border p-2 w-full mb-2" value={benefit} onChange={(e) => setBenefit(e.target.value)} />
+        <>
+          <Label htmlFor="description">Description:</Label>
+          <Input
+            className="border p-2 w-full mb-2"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </>
+      ) : (
+        <p> Description:{product.description}</p>
+      )}
+      {editing ? (
+        <>
+          <Label htmlFor="benefit">Benefit:</Label>
+          <Input className="border p-2 w-full mb-2" value={benefit} onChange={(e) => setBenefit(e.target.value)} />
+        </>
       ) : (
         <p> Benefit:{product.benefit}</p>
       )}
       {editing ? (
-        <Input className="border p-2 w-full mb-2" value={use} onChange={(e) => setUse(e.target.value)} />
+        <>
+          <Label htmlFor="use">How to use:</Label>
+          <Input className="border p-2 w-full mb-2" value={use} onChange={(e) => setUse(e.target.value)} />
+        </>
       ) : (
         <p>How to use :{product.use}</p>
       )}
-      <p>Updated At: {product.updatedAt && new Date(product.updatedAt).toLocaleString()}</p>
+      {/* <p>Updated At: {product.updatedAt && new Date(product.updatedAt}</p> */}
 
       <div className="flex gap-2 mt-2">
         {editing ? (

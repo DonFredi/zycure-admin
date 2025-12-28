@@ -84,9 +84,13 @@ export default function LoginPage() {
 
         <p>
           Forgot password?{" "}
-          <Button onClick={handleResetPassword} disabled={resetting}>
+          <button
+            className="underline text-blue-600 hover:no-underline"
+            onClick={handleResetPassword}
+            disabled={resetting}
+          >
             {resetting ? "Sending..." : "Reset Password"}
-          </Button>
+          </button>
         </p>
       </div>
     </div>

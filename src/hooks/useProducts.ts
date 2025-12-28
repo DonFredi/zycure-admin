@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Product } from "@/types/product";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { uploadProductImage } from "@/lib/uploadProductImage";
 
@@ -51,10 +51,6 @@ export function useProducts() {
     try {
       setLoading(true);
 
-      // 1️⃣ Upload image to Cloudinary
-      const uploaded = await uploadProductImage(imageFile, title);
-      // uploaded = { url: string; publicId: string }
-
       // 2️⃣ Save product to Firestore
       const createdAt = new Date().toISOString();
       const updatedAt = createdAt;
@@ -66,11 +62,14 @@ export function useProducts() {
         description,
         benefit,
         use,
-        imageSrc: uploaded,
+        imageSrc: null,
         createdAt,
         updatedAt,
       });
 
+      const uploaded = await uploadProductImage(docRef.id, imageFile, title);
+      // 3️⃣ Update Firestore with uploaded image
+      await updateDoc(doc(db, "products", docRef.id), { imageSrc: uploaded });
       // 3️⃣ Optimistic UI update
       setProducts((prev) => [
         ...prev,

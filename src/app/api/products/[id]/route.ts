@@ -76,8 +76,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 }
 
 /* ---------------- DELETE ---------------- */
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
 
   const db = getAdminDb();
   const ref = db.collection("products").doc(id);

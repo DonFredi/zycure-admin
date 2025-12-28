@@ -7,7 +7,7 @@ export default function OrdersPage() {
   const { orders, loading } = useOrders();
 
   if (loading) return <p>Loading orders...</p>;
-  if (!orders.length) return <p>No orders found.</p>;
+  if (!orders.length) return <p>No orders found</p>;
   console.log(orders);
   return (
     <>

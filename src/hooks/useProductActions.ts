@@ -24,8 +24,8 @@ export function useProductActions(productId: string) {
     try {
       let imageData: { url: string; publicId: string } | null = null;
 
-      if (payload.imageFile) {
-        imageData = await uploadProductImage(productId, payload.imageFile, payload.title ?? "product");
+      if (payload.imageFile && payload.imageFile instanceof File) {
+        imageData = await uploadProductImage(payload.imageFile, payload.title ?? "product", productId);
       }
 
       const res = await fetch(`/api/products/${productId}`, {

@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -42,10 +40,20 @@ export default function LoginPage() {
 
     try {
       setResetting(true);
-      await sendPasswordResetEmail(auth, email);
-      console.log("Password reset email sent");
-    } catch (err: any) {
-      console.error(err.message || "Failed to send reset email");
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log("Password reset link:", data.link);
+        alert("Password reset email sent!");
+      } else {
+        console.error(data.error);
+        alert("Failed to send reset email");
+      }
     } finally {
       setResetting(false);
     }

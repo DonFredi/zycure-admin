@@ -1,8 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
-import { auth } from "@/lib/firebase"; // Firebase client SDK
-import { getAdminAuth } from "@/lib/firebaseAdmin"; // Firebase Admin SDK
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAdminAuth } from "@/lib/firebaseAdmin"; // server-side only
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,13 +15,32 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
-          // 🔹 Sign in using Firebase client SDK
-          const userCred = await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
+          const { email, password } = credentials;
 
-          // 🔹 Fetch user details via Admin SDK to check custom claims
+          // 🔹 Use Firebase REST API to verify email/password server-side
+          const apiKey = process.env.FIREBASE_API_KEY;
+          const res = await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email,
+                password,
+                returnSecureToken: true,
+              }),
+            }
+          );
+
+          if (!res.ok) return null; // invalid credentials
+
+          const data = await res.json(); // contains idToken & localId
+
+          // 🔹 Fetch user info from Admin SDK
           const adminAuth = getAdminAuth();
-          const adminUser = await adminAuth.getUser(userCred.user.uid);
+          const adminUser = await adminAuth.getUser(data.localId);
 
+          // 🔹 Check if user has admin claim
           if (!adminUser.customClaims?.admin) return null;
 
           return {
@@ -39,28 +56,20 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
-  // 🔐 Session config
   session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET, // REQUIRED in production
+  secret: process.env.NEXTAUTH_SECRET,
 
-  // 🔁 Persist admin flag
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.admin = (user as any).admin === true;
-      }
+      if (user) token.admin = (user as any).admin === true;
       return token;
     },
 
     async session({ session, token }) {
-      session.user = {
-        ...session.user,
-        admin: token.admin as boolean,
-      };
+      session.user = { ...session.user, admin: token.admin as boolean };
       return session;
     },
   },
 
-  // 🔑 Custom login page
   pages: { signIn: "/login" },
 };

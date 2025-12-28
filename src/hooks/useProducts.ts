@@ -67,7 +67,7 @@ export function useProducts() {
         updatedAt,
       });
 
-      const uploaded = await uploadProductImage(docRef.id, imageFile, title);
+      const uploaded = await uploadProductImage(imageFile, title, docRef.id);
       // 3️⃣ Update Firestore with uploaded image
       await updateDoc(doc(db, "products", docRef.id), { imageSrc: uploaded });
       // 3️⃣ Optimistic UI update

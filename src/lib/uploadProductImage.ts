@@ -1,7 +1,7 @@
 export async function uploadProductImage(
-  productId: string,
   file: File,
-  title: string
+  title: string,
+  productId: string
 ): Promise<{ url: string; publicId: string }> {
   const formData = new FormData();
   formData.append("file", file);

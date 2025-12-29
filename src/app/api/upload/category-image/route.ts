@@ -1,6 +1,5 @@
-import { NextResponse ,NextRequest} from "next/server";
-import { v2 as cloudinary } from "cloudinary";
-
+import { NextResponse, NextRequest } from "next/server";
+import cloudinary from "@/lib/cloudinary";
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();

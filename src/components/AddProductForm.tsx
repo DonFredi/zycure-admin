@@ -25,7 +25,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
     setLoading(true);
 
     try {
-      // 1️⃣ Create product first
+      // 1️⃣ Create product
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,16 +40,17 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
 
       if (!res.ok) throw new Error("Failed to create product");
 
-      const { productId } = await res.json();
+      const data = await res.json();
+      const productId = data.productId;
+
       if (!productId) {
         throw new Error("Missing product ID");
       }
 
-      // 2️⃣ Upload image
+      // 2️⃣ Upload image (multipart/form-data ONLY)
       if (imageFile) {
         const formData = new FormData();
         formData.append("file", imageFile);
-        formData.append("title", title);
 
         const uploadRes = await fetch(`/api/upload/product-image/${productId}`, {
           method: "POST",
@@ -57,7 +58,22 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
         });
 
         const uploadData = await uploadRes.json();
-        if (!uploadRes.ok || !uploadData.success) throw new Error(uploadData.error);
+
+        if (!uploadRes.ok || !uploadData.success) {
+          throw new Error(uploadData.error || "Image upload failed");
+        }
+
+        // 3️⃣ Update product with image
+        await fetch(`/api/products/${productId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageSrc: {
+              url: uploadData.url,
+              publicId: uploadData.publicId,
+            },
+          }),
+        });
       }
 
       onSuccess();

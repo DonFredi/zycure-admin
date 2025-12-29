@@ -1,3 +1,4 @@
+import SectionContainer from "@/components/section/SectionContainer";
 import { Category } from "@/types/category";
 
 interface Props {
@@ -6,8 +7,9 @@ interface Props {
 
 export default function CategoryDetailsClient({ category }: Props) {
   return (
-    <div>
-      <h1>{category.name}</h1>
-    </div>
+    <>
+      <h2>{category.name}</h2>
+      <SectionContainer></SectionContainer>
+    </>
   );
 }

@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Logo from "./icons/Logo";
 import AdminLogoutButton from "./AdminLogoutButton";
+import Breadcrumb from "./ui/breadcrumb";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -102,6 +103,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
               <Menu className="h-6 w-6" />
             </Button>
           </div>
+          <Breadcrumb />
 
           {children}
         </main>

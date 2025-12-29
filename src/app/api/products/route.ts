@@ -39,5 +39,8 @@ export async function POST(req: Request) {
     updatedAt: new Date(),
   });
 
-  return NextResponse.json({ id: ref.id });
+  return NextResponse.json({
+    success: true,
+    productId: ref.id,
+  });
 }

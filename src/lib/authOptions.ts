@@ -31,8 +31,9 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!res.ok) {
-          console.error("Firebase auth error:", await res.json());
-          return null;
+          const err = await res.json();
+          console.error("Firebase PROD auth error:", err);
+          throw new Error("Firebase login failed");
         }
 
         const data = await res.json();

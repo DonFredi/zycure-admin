@@ -9,7 +9,9 @@ export default function CategoryDetailsClient({ category }: Props) {
   return (
     <>
       <h2>{category.name}</h2>
-      <SectionContainer></SectionContainer>
+      <SectionContainer>
+        <p>Category Page</p>
+      </SectionContainer>
     </>
   );
 }

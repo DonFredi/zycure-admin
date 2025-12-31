@@ -39,7 +39,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Button variant="outline" onClick={() => setOpen(false)} className="block border">
+        <Button
+          variant="outline"
+          onClick={() => setOpen(false)}
+          className="block rounded-sm p-1 border border-primary text-primary"
+        >
           <Cancel />
         </Button>
 
@@ -50,7 +54,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-1 p-4">
         {/* Mobile Top Bar */}
         <div className="md:hidden mb-4">
-          <Button variant="ghost" onClick={() => setOpen(true)}>
+          <Button
+            variant="ghost"
+            onClick={() => setOpen(true)}
+            className="md:hidden rounded-sm p-1 border border-primary text-primary"
+          >
             <Menu />
           </Button>
         </div>

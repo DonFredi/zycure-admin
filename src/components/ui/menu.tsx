@@ -10,7 +10,6 @@ const Menu = ({ color = "currentColor", size = 24 }) => {
       strokeLinecap="round"
       strokeLinejoin="round"
       xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
     >
       <path d="M3.97 5.97H19.97" />
       <path d="M3.97 11.97H19.97" />

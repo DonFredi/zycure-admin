@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Sidebar,
   SidebarHeader,
@@ -9,11 +10,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarProvider,
 } from "@/components/ui/sidebar";
 
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import Logo from "./icons/Logo";
@@ -24,91 +24,98 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <SidebarProvider>
-      <div className="flex flex-row justify-between gap-2 w-full p-2">
-        {/* Desktop Sidebar (FIXED) */}
-        <aside className="hidden md:block w-64 border-r bg-background text-3xl">
-          <Sidebar>
-            <SidebarHeader>
-              <Logo />
-            </SidebarHeader>
-            <SidebarContent>
-              <SidebarGroup>
-                <SidebarGroupLabel>Admin Dashboard</SidebarGroupLabel>
+    <div className="flex min-h-screen w-full">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:block w-64 border-r bg-background">
+        <Sidebar>
+          <SidebarHeader>
+            <Logo />
+          </SidebarHeader>
 
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/dashboard/products" className="hover:underline">
-                          View Products
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>Admin Dashboard</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/dashboard/products">Products</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
 
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/dashboard/categories" className="hover:underline">
-                          View Categories
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/dashboard/categories">Categories</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
 
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/dashboard/orders" className="hover:underline">
-                          View Orders
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/dashboard/orders">Orders</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
 
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <AdminLogoutButton />
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </SidebarContent>
-          </Sidebar>
-        </aside>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <AdminLogoutButton />
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
+      </aside>
 
-        {/* Mobile Sidebar */}
-        {open && (
-          <div className="fixed inset-0 z-50 md:hidden bg-black/40">
-            <aside className="w-64 h-full bg-background border-r">
-              <Sidebar>
-                <SidebarContent>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/admin" onClick={() => setOpen(false)}>
-                          Dashboard
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarContent>
-              </Sidebar>
-            </aside>
-          </div>
-        )}
+      {/* Mobile Overlay */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity md:hidden ${
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setOpen(false)}
+      />
 
-        {/* Main Content */}
-        <main className="flex flex-col w-full">
-          {/* Mobile top bar */}
-          <div className="md:hidden mb-4">
-            <Button variant="ghost" onClick={() => setOpen(true)}>
-              <Menu className="h-6 w-6" />
-            </Button>
-          </div>
-          <Breadcrumb />
+      {/* Mobile Sidebar */}
+      <aside
+        className={`fixed left-0 top-0 z-50 h-full w-64 bg-background border-r transform transition-transform md:hidden ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-between items-center p-4">
+          <Logo />
+          <Button variant="ghost" onClick={() => setOpen(false)}>
+            <X />
+          </Button>
+        </div>
 
-          {children}
-        </main>
-      </div>
-    </SidebarProvider>
+        <Sidebar>
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/products" onClick={() => setOpen(false)}>
+                    Products
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarContent>
+        </Sidebar>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-4">
+        {/* Mobile Top Bar */}
+        <div className="md:hidden mb-4">
+          <Button variant="ghost" onClick={() => setOpen(true)}>
+            <Menu className="h-6 w-6" />
+          </Button>
+        </div>
+
+        <Breadcrumb />
+        {children}
+      </main>
+    </div>
   );
 };
 

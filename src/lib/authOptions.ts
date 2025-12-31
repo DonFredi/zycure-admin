@@ -29,6 +29,11 @@ export const authOptions: NextAuthOptions = {
             returnSecureToken: true,
           }),
         });
+        console.log("ENV CHECK", {
+          nodeEnv: process.env.NODE_ENV,
+          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+          projectId: process.env.FIREBASE_PROJECT_ID,
+        });
 
         if (!res.ok) {
           const err = await res.json();

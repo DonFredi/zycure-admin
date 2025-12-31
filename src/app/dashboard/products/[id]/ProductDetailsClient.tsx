@@ -7,6 +7,7 @@ import { useCategory } from "@/hooks/useCategories";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import SectionContainer from "@/components/section/SectionContainer";
 
 interface Props {
   product: Product;
@@ -48,7 +49,7 @@ export default function ProductDetailsClient({ product }: Props) {
   const categoryName = categories.find((c) => c.id === product.categoryId)?.name ?? "Unknown";
 
   return (
-    <div>
+    <SectionContainer className="flex flex-col justify-between gap-2">
       {editing ? (
         <>
           <Label htmlFor="file">Image:</Label>
@@ -60,18 +61,14 @@ export default function ProductDetailsClient({ product }: Props) {
           />
         </>
       ) : (
-        <div className="mb-4">
-          <Label>Image:</Label>
-
-          <div className="relative w-40 h-40 mt-2 border rounded overflow-hidden">
-            <Image
-              src={product.imageSrc?.url || "/images/placeholder.png"}
-              alt={product.title}
-              fill
-              className="object-cover"
-              sizes="160px"
-            />
-          </div>
+        <div className="relative w-48 h-48 mt-2 border rounded overflow-hidden">
+          <Image
+            src={product.imageSrc?.url || "/images/placeholder.png"}
+            alt={product.title}
+            fill
+            className="object-cover"
+            sizes="160px"
+          />
         </div>
       )}
       {editing ? (
@@ -161,6 +158,6 @@ export default function ProductDetailsClient({ product }: Props) {
           </>
         )}
       </div>
-    </div>
+    </SectionContainer>
   );
 }

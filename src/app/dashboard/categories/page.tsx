@@ -15,22 +15,26 @@ export default function CategoriesPage() {
     <>
       <h1 className="text-2xl font-bold mb-4">Categories</h1>
       <SectionContainer>
-        <div className="mb-4 flex gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           <Input
             type="text"
             placeholder="Category Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border p-2 rounded w-fit"
+            className="border p-2 rounded w-full sm:w-auto"
           />
+
           <Input
-            placeholder="Image URL"
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-            className="border p-2 rounded w-fit"
+            className="border p-2 rounded w-full sm:w-auto"
           />
-          <button onClick={handleCategoryAdd} className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+
+          <button
+            onClick={handleCategoryAdd}
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 w-full sm:w-auto"
+          >
             Add Category
           </button>
         </div>

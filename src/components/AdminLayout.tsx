@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SidebarNav from "./ui/sidebarNav";
 import Breadcrumb from "./ui/breadcrumb";
+import Cancel from "./ui/cancel";
+import Menu from "./ui/menu";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -38,11 +39,9 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4 border-b">
-          <Button variant="ghost" onClick={() => setOpen(false)}>
-            <X />
-          </Button>
-        </div>
+        <Button variant="outline" onClick={() => setOpen(false)} className="block border">
+          <Cancel />
+        </Button>
 
         <SidebarNav onNavigate={() => setOpen(false)} />
       </aside>
@@ -52,7 +51,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Mobile Top Bar */}
         <div className="md:hidden mb-4">
           <Button variant="ghost" onClick={() => setOpen(true)}>
-            <Menu className="h-6 w-6" />
+            <Menu />
           </Button>
         </div>
 

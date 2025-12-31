@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import AdminLayout from "@/components/AdminLayout";
 import { authOptions } from "@/lib/authOptions";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -14,5 +15,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/not-authorized"); // logged in but not admin
   }
 
-  return <AdminLayout>{children}</AdminLayout>;
+  return (
+    <SidebarProvider>
+      <AdminLayout>{children}</AdminLayout>;
+    </SidebarProvider>
+  );
 }

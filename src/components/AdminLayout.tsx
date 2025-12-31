@@ -1,70 +1,27 @@
 "use client";
 
-import {
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-} from "@/components/ui/sidebar";
-
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import Logo from "./icons/Logo";
-import AdminLogoutButton from "./AdminLogoutButton";
+import { Button } from "@/components/ui/button";
+import SidebarNav from "./ui/sidebarNav";
 import Breadcrumb from "./ui/breadcrumb";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
 
+  // Prevent background scroll on mobile
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <div className="flex min-h-screen w-full">
       {/* Desktop Sidebar */}
       <aside className="hidden md:block w-64 border-r bg-background">
-        <Sidebar>
-          <SidebarHeader>
-            <Logo />
-          </SidebarHeader>
-
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel>Admin Dashboard</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/dashboard/products">Products</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/dashboard/categories">Categories</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/dashboard/orders">Orders</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <AdminLogoutButton />
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
+        <SidebarNav />
       </aside>
 
       {/* Mobile Overlay */}
@@ -77,30 +34,17 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 h-full w-64 bg-background border-r transform transition-transform md:hidden ${
+        className={`fixed left-0 top-0 z-50 h-full w-64 bg-background border-r transform transition-transform duration-300 ease-in-out md:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4">
-          <Logo />
+        <div className="flex justify-between items-center p-4 border-b">
           <Button variant="ghost" onClick={() => setOpen(false)}>
             <X />
           </Button>
         </div>
 
-        <Sidebar>
-          <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard/products" onClick={() => setOpen(false)}>
-                    Products
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-        </Sidebar>
+        <SidebarNav onNavigate={() => setOpen(false)} />
       </aside>
 
       {/* Main Content */}

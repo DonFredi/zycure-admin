@@ -26,30 +26,32 @@ const SidebarNav = ({ onNavigate }: Props) => {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="none" className="h-full flex flex-col justify-between">
-      <div>
+    <Sidebar collapsible="none">
+      <div className="h-full flex flex-col justify-between">
         {/* ───────────── TOP ───────────── */}
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
 
         {/* ─────────── MIDDLE ─────────── */}
-        <SidebarContent className="flex-1 overflow-y-auto">
+        <SidebarContent className="flex-1 overflow-y-auto flex-col justify-between">
           <SidebarGroup>
-            <SidebarGroupLabel>Admin Dashboard</SidebarGroupLabel>
-
             <SidebarGroupContent>
               <SidebarMenu>
                 {adminSidebarLinks.map((item) => {
                   const Icon = item.icon;
-                  const isActive = pathname.startsWith(item.href);
+                  const isActive =
+                    item.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(item.href);
 
                   return (
                     <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton asChild className={isActive ? "bg-muted text-primary" : ""}>
-                        <Link href={item.href} onClick={onNavigate} className="flex items-center gap-2 px-4 py-3">
-                          <Icon className="h-4 w-4" />
-                          <span className="text-sm">{item.label}</span>
+                      <SidebarMenuButton
+                        asChild
+                        className={isActive ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"}
+                      >
+                        <Link href={item.href} onClick={onNavigate} className="flex items-center gap-2 p-6">
+                          <Icon className="h-6 w-6" />
+                          <span className="text-md font-semibold">{item.label}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

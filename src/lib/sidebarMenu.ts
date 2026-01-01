@@ -1,6 +1,11 @@
-import { Package, Layers, ShoppingCart } from "lucide-react";
+import { Package, Layers, ShoppingCart, LayoutDashboard } from "lucide-react";
 
 export const adminSidebarLinks = [
+  {
+    label: "Dashboard Overview",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
   {
     label: "View Products",
     href: "/dashboard/products",

@@ -62,7 +62,7 @@ export default function ProductDetailsClient({ product }: Props) {
           />
         </>
       ) : (
-        <div className="relative w-48 md:w-[90%] h-48 mt-2 border rounded overflow-hidden">
+        <div className="relative w-full h-54 mt-2 border rounded overflow-hidden">
           <Image
             src={product.imageSrc?.url || "/images/placeholder.png"}
             alt={product.title}

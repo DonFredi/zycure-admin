@@ -1,6 +1,7 @@
 "use client";
 
 import SectionContainer from "@/components/section/SectionContainer";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCategory } from "@/hooks/useCategories";
 import Image from "next/image";
@@ -31,12 +32,12 @@ export default function CategoriesPage() {
             className="border p-2 rounded w-full sm:w-auto"
           />
 
-          <button
+          <Button
             onClick={handleCategoryAdd}
             className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 w-full sm:w-auto"
           >
             Add Category
-          </button>
+          </Button>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

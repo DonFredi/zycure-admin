@@ -16,9 +16,19 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Products</h1>
+      <div className="flex flex-row justify-between  mb-4">
+        <h1 className="text-2xl font-bold">Products</h1>
+        <Link
+          href="/dashboard/products/new-product"
+          className="flex items-center gap-2 p-2 bg-primary text-white rounded hover:bg-primary/70"
+        >
+          <Plus className="text-white w-5 h-5" />
+          Add Product
+        </Link>
+      </div>
+
       <SectionContainer>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center">
           {products.map((product) => (
             <Link
               href={`/dashboard/products/${product.id}`}

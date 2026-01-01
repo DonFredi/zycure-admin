@@ -34,6 +34,7 @@ export default function AddProductForm({ onCancel, onSuccess }: { onCancel: () =
           price,
           categoryId,
           benefit,
+          description,
           use,
         }),
       });

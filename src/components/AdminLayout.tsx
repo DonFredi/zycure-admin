@@ -35,7 +35,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 h-full w-64 bg-background border-r transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed left-0 top-0 z-50 h-full w-68 flex flex-row-reverse transform transition-transform duration-300 ease-in-out md:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -55,7 +55,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Mobile Top Bar */}
         <div className="md:hidden mb-4">
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={() => setOpen(true)}
             className="md:hidden rounded-sm p-1 border border-primary text-primary"
           >

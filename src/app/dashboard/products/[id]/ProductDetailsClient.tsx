@@ -47,6 +47,7 @@ export default function ProductDetailsClient({ product }: Props) {
     setEditing(false);
   };
   const categoryName = categories.find((c) => c.id === product.categoryId)?.name ?? "Unknown";
+  if (loading) return <p>Loading Product...</p>;
 
   return (
     <SectionContainer className="flex flex-col justify-between gap-2">
@@ -61,11 +62,12 @@ export default function ProductDetailsClient({ product }: Props) {
           />
         </>
       ) : (
-        <div className="relative w-48 h-48 mt-2 border rounded overflow-hidden">
+        <div className="relative w-48 md:w-[90%] h-48 mt-2 border rounded overflow-hidden">
           <Image
             src={product.imageSrc?.url || "/images/placeholder.png"}
             alt={product.title}
             fill
+            loading="eager"
             className="object-cover"
             sizes="160px"
           />
@@ -77,7 +79,10 @@ export default function ProductDetailsClient({ product }: Props) {
           <Input className="border p-2 w-full mb-2" value={title} onChange={(e) => setTitle(e.target.value)} />
         </>
       ) : (
-        <h2>Name:{product.title}</h2>
+        <h2>
+          <strong>Name: </strong>
+          {product.title}
+        </h2>
       )}
       {editing ? (
         <>
@@ -89,7 +94,11 @@ export default function ProductDetailsClient({ product }: Props) {
           />
         </>
       ) : (
-        <p>Price:{product.price}</p>
+        <p>
+          {" "}
+          <strong>Price: </strong>
+          {product.price}
+        </p>
       )}
       {editing ? (
         <>
@@ -104,7 +113,10 @@ export default function ProductDetailsClient({ product }: Props) {
           </select>
         </>
       ) : (
-        <p>Category:{categoryName}</p>
+        <p>
+          <strong>Category: </strong>
+          {categoryName}
+        </p>
       )}
       {editing ? (
         <>
@@ -116,7 +128,11 @@ export default function ProductDetailsClient({ product }: Props) {
           />
         </>
       ) : (
-        <p> Description:{product.description}</p>
+        <p>
+          {" "}
+          <strong>Description: </strong>
+          {product.description}
+        </p>
       )}
       {editing ? (
         <>
@@ -124,7 +140,11 @@ export default function ProductDetailsClient({ product }: Props) {
           <Input className="border p-2 w-full mb-2" value={benefit} onChange={(e) => setBenefit(e.target.value)} />
         </>
       ) : (
-        <p> Benefit:{product.benefit}</p>
+        <p>
+          {" "}
+          <strong>Benefit: </strong>
+          {product.benefit}
+        </p>
       )}
       {editing ? (
         <>
@@ -132,7 +152,10 @@ export default function ProductDetailsClient({ product }: Props) {
           <Input className="border p-2 w-full mb-2" value={use} onChange={(e) => setUse(e.target.value)} />
         </>
       ) : (
-        <p>How to use :{product.use}</p>
+        <p>
+          <strong>How to use: </strong>
+          {product.use}
+        </p>
       )}
       {/* <p>Updated At: {product.updatedAt && new Date(product.updatedAt}</p> */}
 

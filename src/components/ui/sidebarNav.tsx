@@ -26,10 +26,10 @@ const SidebarNav = ({ onNavigate }: Props) => {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="none" className="h-full">
+    <Sidebar collapsible="none" className="h-full flex flex-col justify-between">
       <div>
         {/* ───────────── TOP ───────────── */}
-        <SidebarHeader className="p-4 border-b">
+        <SidebarHeader>
           <Logo />
         </SidebarHeader>
 

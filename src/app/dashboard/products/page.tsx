@@ -12,7 +12,7 @@ export default function ProductsPage() {
 
   if (loading) return <p>Loading products...</p>;
   if (!products.length) return <p>No products found.</p>;
-  console.log(products);
+  //   console.log(products);
 
   return (
     <div>
@@ -30,6 +30,7 @@ export default function ProductsPage() {
                   src={product.imageSrc?.url || "/images/placeholder.png"}
                   alt={product.title}
                   fill
+                  loading="eager"
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 300px"
                 />

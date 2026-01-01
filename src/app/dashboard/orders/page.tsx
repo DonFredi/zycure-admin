@@ -9,7 +9,7 @@ export default function OrdersPage() {
 
   if (loading) return <p>Loading orders...</p>;
   if (!orders.length) return <p>No orders found</p>;
-  console.log(orders);
+  //   console.log(orders);
   return (
     <>
       <h1 className="text-2xl font-bold mb-4">Orders</h1>
